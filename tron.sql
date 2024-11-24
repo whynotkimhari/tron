@@ -1,0 +1,11 @@
+DROP DATABASE IF EXISTS tron;
+
+CREATE DATABASE IF NOT EXISTS tron;
+USE tron;
+
+CREATE TABLE IF NOT EXISTS player (
+  `name` VARCHAR(20) NOT NULL,
+  `score` INT NOT NULL,
+  
+  PRIMARY KEY (`name`)
+);
