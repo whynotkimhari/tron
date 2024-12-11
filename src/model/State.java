@@ -9,7 +9,7 @@ import view.Board;
 import view.Game;
 
 /**
- *
+ * The game state
  * @author Nguyen Kim Hai, Bui
  */
 public class State {
@@ -20,7 +20,14 @@ public class State {
     private Board board;
     private final Level lv;
     
+    /**
+     * Players
+     */
     public final Player p1, p2;
+    
+    /**
+     * Time counter
+     */
     public final TimeCounter tc;
     
     public State(Player p1, Player p2, Level lv) {
@@ -30,7 +37,13 @@ public class State {
         tc = new TimeCounter();
     }
     
-    private boolean checkLost(Player p) {
+    /**
+     * Check if player with given id is lost
+     * @param id player id: 1 or 2
+     * @return boolean
+     */
+    private boolean isLost(int id) {
+        Player p = id == p1.id ? p1 : p2;
         try {
             for (Direction d: Direction.values()) {
                 int RGB = board.getCanvas().getRGB(
@@ -49,12 +62,16 @@ public class State {
         return false;
     }
     
+    /**
+     * Move to next state
+     * @throws IllegalStateException 
+     */
     private void next() throws IllegalStateException {
         p1.move(lv.FPCS);
         p2.move(lv.FPCS);
 
-        isP1Lost = checkLost(p1);
-        isP2Lost = checkLost(p2);
+        isP1Lost = isLost(p1.id);
+        isP2Lost = isLost(p2.id);
         
         board.repaint();
         
@@ -62,18 +79,9 @@ public class State {
             throw new IllegalStateException();
     }
     
-    private Player getWinner() {
-        // If no one won neither lost
-        // May happen if thread is interrupted       
-        if (!isP1Lost && !isP2Lost) return null;
-        
-        // If no one won, both lost
-        if (isP1Lost && isP2Lost) return null;
-        
-        // One of them won
-        return isP1Lost ? p2 : p1;
-    }
-    
+    /**
+     * Start the state
+     */
     public void run() {
         board.repaint();
         tc.start();
@@ -81,16 +89,32 @@ public class State {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     Thread.sleep(10);
+                    game.timeLabel.setText(
+                        "Playing time: %.2fs".formatted(
+                           tc.getCounter()
+                        )
+                    );
                     next();
                 }
             } catch (InterruptedException | IllegalStateException e) {
                 tc.stop();
-                game.end(getWinner() == null ? "Nobody" : getWinner().name);
+                
+                // Only one of them won
+                if (isP1Lost ^ isP2Lost) {
+                    game.end((isP1Lost ? p2 : p1).name);
+                }
+                
+                else {
+                    game.end("Nobody");
+                }
             }
             
         }).start();
     }
     
+    /**
+     * restart the state
+     */
     public void restart() {
         p1.init();   isP1Lost = false;
         p2.init();   isP2Lost = false;
@@ -98,9 +122,12 @@ public class State {
         tc.restart();
     }
     
-    public void setDirectionFor(int playerID, Direction d) {
-        (playerID == 1 ? p1 : p2).setDir(d);
-    }
+    /**
+     * Set the direction for player with given id and given direction
+     * @param id player id
+     * @param d direction
+     */
+    public void setDirectionFor(int id, Direction d) { (id == 1 ? p1 : p2).setD(d); }
     
     public void setGame(Game game) { this.game = game; }
     public void setBoard(Board board) { this.board = board; }
