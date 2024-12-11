@@ -5,7 +5,7 @@
 package model;
 
 /**
- *
+ * The Level
  * @author Nguyen Kim Hai, Bui
  */
 public enum Level {
@@ -15,6 +15,9 @@ public enum Level {
     ADVANCE(8),
     HARD(10);
     
+    /**
+     * Frame Per Centi Second
+     */
     public final int FPCS;
     Level (int FPCS) { this.FPCS = FPCS; }
 }
