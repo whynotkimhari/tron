@@ -13,11 +13,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
- *
+ * The ColorPicker
  * @author Nguyen Kim Hai, Bui
  */
 public class ColorPicker extends JPanel {
     private Color color = Color.GRAY;
+    
+    /**
+     * color picker button
+     */
     public final JButton button = new JButton("Pick a Color");
     
     public ColorPicker(JFrame owner) {
