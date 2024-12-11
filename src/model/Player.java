@@ -9,7 +9,7 @@ import java.awt.Color;
 import view.BaseWindow;
 
 /**
- *
+ * The Player
  * @author Nguyen Kim Hai, Bui
  */
 public class Player {
@@ -18,46 +18,68 @@ public class Player {
     private static final Direction p2d = Direction.LEFT;
     private static final Position p2p = new Position(BaseWindow.W * 3 / 4, BaseWindow.H / 2);
     
-    private final int id;
     private Position pos;
-    private Direction dir;
+    private Direction d;
     
-    public Vehicle veh;
+    /**
+     * Player's id: 1 or 2
+     */
+    public final int id;
+    
+    /**
+     * Player's vehicle
+     */
+    public final Vehicle veh;
+    
+    /**
+     * Player's name
+     */
     public final String name;
+    
+    /**
+     * Player's color
+     */
     public final Color color;
-    public final String vehicleName;
     
     public Player() {
         id = -1;
         name = "";
         color = Color.GRAY;
-        vehicleName = "";
+        veh = new Vehicle();
     }
     
-    public Player(String name, Color color, String vehicleName, int id) {
+    public Player(String name, Color color, int id, String vehName) {
         this.name = name;
         this.color = color;
-        this.vehicleName = vehicleName;
         this.id = id;
-        init();
+        d = (id == 1) ? p1d : p2d;
+        pos = (id == 1) ? new Position(p1p) : new Position(p2p);
+        veh = new Vehicle(vehName, d);
     }
     
-    private void rotateVehicle() {
-        veh = new Vehicle(vehicleName, dir.name().toLowerCase());
-    }
-    
+    /**
+     * Create init the position and direction for player
+     */
     public void init() {
-        this.dir = (id == 1) ? p1d : p2d;
-        this.pos = (id == 1) ? new Position(p1p) : new Position(p2p);
-        rotateVehicle();
+        d = (id == 1) ? p1d : p2d;
+        pos = (id == 1) ? new Position(p1p) : new Position(p2p);
+        veh.rotate(d);
     }
     
-    public void setDir(Direction d) {
-        dir = d;
-        rotateVehicle();
+    /**
+     * Set direction for player and rotate his vehicle
+     * @param d direction
+     */
+    public void setD(Direction d) {
+        this.d = d;
+        veh.rotate(d);
     }
     
-    public void move(int speed) { pos.translate(dir, speed); }
+    /**
+     * Move the player
+     * @param speed move speed
+     */
+    public void move(int speed) { pos.translate(d, speed); }
     public int getX() { return pos.getX(); }
     public int getY() { return pos.getY(); }
 }
