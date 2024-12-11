@@ -4,37 +4,25 @@
  */
 package controller;
 
-import javax.swing.JLabel;
 import javax.swing.Timer;
 
 /**
- *
+ * The time counter
  * @author Nguyen Kim Hai, Bui
  */
-public class TimeCounter {
-    private int counter = 0;
-    private JLabel target;
-    private final Timer timer;
+public class TimeCounter extends Timer {
+    private float counter = 0;
     
     public TimeCounter() {
-        timer = new Timer(1000, e -> count());
+        super(10, null);
+        addActionListener(e -> {
+            counter += 0.01;
+        });
     }
     
-    private void count() {
-        counter++;
-        update();
-    }
-    
-    private void update() {
-        target.setText("Playing time: %ds".formatted(counter));
-    }
-    
-    public void restart() {
-        counter = 0;
-        update();
-    }
-    
-    public void start() { timer.start(); }
-    public void stop() { timer.stop(); }
-    public void setTarget(JLabel target) { this.target = target; }
+    /**
+     * restart the counter to zero
+     */
+    public void restart() { counter = 0; }
+    public float getCounter() { return counter; }
 }
