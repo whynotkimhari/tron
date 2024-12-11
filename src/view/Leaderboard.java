@@ -20,13 +20,13 @@ import model.RecordTable;
 import model.Record;
 
 /**
- *
+ * The leaderboard
  * @author Nguyen Kim Hai, Bui
  */
 public class Leaderboard extends JDialog {
     private final JTable table;
     
-    public Leaderboard(ArrayList<Record> records, JFrame parent){
+    public Leaderboard(ArrayList<Record> records, JFrame parent) {
         super(parent, true);
         table = new JTable(new RecordTable(records));
         table.setFillsViewportHeight(true);
