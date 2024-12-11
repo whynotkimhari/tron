@@ -21,15 +21,26 @@ import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
  * @author Nguyen Kim Hai, Bui
  */
 public abstract class BaseWindow extends JFrame {
+    protected final Database db = Database.getDatabase();
+    
+    /**
+     * Window Width
+     */
     public static final int W = 1000;
+    
+    /**
+     * Window Height
+     */
     public static final int H = 800;
     
-    protected final JMenuItem menuLeaderBoard = new JMenuItem("Leaderboard");
+    protected final JMenuItem menuLeaderboard = new JMenuItem("Leaderboard");
     protected final JMenuItem menuGameRestart = new JMenuItem("Restart");
-    protected final JLabel timeLabel = new JLabel("Playing time: 0s");
+    
     /**
-     * The constructor initial a centered square window whose side length is half of the screen width size
+     * Time label
      */
+    public final JLabel timeLabel = new JLabel("Playing time: 0s");
+    
     protected BaseWindow() {
         JMenuBar menuBar = new JMenuBar();
         JMenu menuGame = new JMenu("Game");
@@ -38,15 +49,15 @@ public abstract class BaseWindow extends JFrame {
         timeLabel.setVisible(false);
         menuGameRestart.setEnabled(false);
         
-        menuLeaderBoard.addActionListener((ActionEvent e) -> {
+        menuLeaderboard.addActionListener((ActionEvent e) -> {
             new Leaderboard(
-                Database.getLeaderboard(), 
+                db.getRecords(), 
                 BaseWindow.this
             );
         });
         menuGameExit.addActionListener((ActionEvent e) -> System.exit(0));
         
-        menuGame.add(menuLeaderBoard);
+        menuGame.add(menuLeaderboard);
         menuGame.addSeparator();
         menuGame.add(menuGameRestart);
         menuGame.add(menuGameExit);
@@ -65,25 +76,17 @@ public abstract class BaseWindow extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                showExitConfirmation();
+                int userOption = JOptionPane.showConfirmDialog(
+                    BaseWindow.this, 
+                    "Do you really want to quit?",
+                    "Really?", 
+                    JOptionPane.YES_NO_OPTION
+                );
+
+                if (userOption == JOptionPane.YES_OPTION)
+                    doUponExit();
             }
         });
-    }
-    
-    /**
-     * The Window will ask for the confirmation when user want to close it
-     */
-    private void showExitConfirmation() {
-        int userOption = JOptionPane.showConfirmDialog(
-            this, 
-            "Do you really want to quit?",
-            "Really?", 
-            JOptionPane.YES_NO_OPTION
-        );
-        
-        if (userOption == JOptionPane.YES_OPTION)
-            doUponExit();
-        
     }
     
     /**
