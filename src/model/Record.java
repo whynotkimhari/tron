@@ -5,7 +5,7 @@
 package model;
 
 /**
- *
+ * The Record
  * @author Nguyen Kim Hai, Bui
  */
 public class Record {
