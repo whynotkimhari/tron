@@ -9,15 +9,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import controller.Database;
 import model.Level;
 import model.Player;
 import model.State;
+import java.util.Map.Entry;
+import static java.util.Map.entry;
 
 /**
  * The Menu of the game
@@ -27,7 +27,7 @@ import model.State;
 public class Menu extends BaseWindow {
     private final ArrayList<Game> games = new ArrayList<>();
     private final JLabel errorLabel = new JLabel("");
-    private final InputPanel[] inputs = new InputPanel[] { 
+    private final InputPanel[] ips = new InputPanel[] { 
         new InputPanel("Player 1", this),
         new InputPanel("Player 2", this)
     };
@@ -39,50 +39,76 @@ public class Menu extends BaseWindow {
         errorLabel.setForeground(Color.RED);
         getContentPane().setLayout(new GridLayout(5, 1));
         
-        getContentPane().add(createBanner());
-        getContentPane().add(inputs[0]);
-        getContentPane().add(inputs[1]);
+        // Banner
+        JPanel welcomePanel = new JPanel();
+        welcomePanel.add(
+            new JLabel(
+            """
+                <html>
+                    <div align='center'>
+                        <h1>TRON</h1>
+                        <p>Hi players! Welcome to Tron!</p>
+                        <p>Please type your names, choose colors, and ready to play!</p>
+                    </div>
+                </html>
+                """
+            )
+        );
+        getContentPane().add(welcomePanel);
         
+        // Input panels
+        getContentPane().add(ips[0]);
+        getContentPane().add(ips[1]);
+        
+        // Error panel
         JPanel errorNotifier = new JPanel();
         errorNotifier.add(errorLabel);
         getContentPane().add(errorNotifier);
-        getContentPane().add(createLevelPanel());
+        
+        // Level panel
+        JPanel lvPanel = new JPanel(new FlowLayout());
+        
+        for (Level lv: Level.values()) {
+            JButton button = new JButton();
+            button.setText(lv.name());
+            button.setPreferredSize(new Dimension(150, 50));
+
+            button.addActionListener(e -> handleLvChosen(lv));
+            lvPanel.add(button);
+        }
+        getContentPane().add(lvPanel);
     }
     
-    private JPanel createBanner() {
-        StringBuilder sb = new StringBuilder();
-        sb
-        .append("<html>")
-            .append("<div align='center'>")
-                .append("<h1>TRON</h1>")
-                .append("<p>Hi players! Welcome to Tron!</p>")
-                .append("<p>Please type your names, choose colors, and ready to play!</p>")
-            .append("</div>")
-        .append("</html>");
-        
-        JPanel welcomePanel = new JPanel();
-        welcomePanel.add(new JLabel(sb.toString()));
-        
-        return welcomePanel;
-    }
-    
-    private Map.Entry<Boolean, Player> getInput(int id) {
+    /**
+     * Get the input information and create player if the condition is met
+     * @param id player id, 1 or 2
+     * @return pair of a boolean and a Player
+     */
+    private Entry<Boolean, Player> getInput(int id) {
         InputPanel input = (InputPanel) getContentPane().getComponent(id);
         
         try {
-            return Map.entry(true, new Player(
-                input.getPlayerName(),
-                input.getColor(),
-                input.getVehicleName(),
-                id
-            ));
+            return entry(true, 
+                new Player(
+                    input.getPlayerName(),
+                    input.getColor(),
+                    id,
+                    input.getVehicleName()
+                )
+            );
         }
         
         catch (IllegalArgumentException e) {
-            return Map.entry(false, new Player());
+            return entry(false, new Player());
         }
     }
     
+    /**
+     * Validate the players
+     * @param p1 player 1
+     * @param p2 player 2
+     * @return boolean
+     */
     private boolean validate(Player p1, Player p2) {
         if (p1.name.equals(p2.name)) {
             errorLabel.setText("Names must be unique!");
@@ -98,9 +124,13 @@ public class Menu extends BaseWindow {
         return true;
     }
     
-    private void handleLevelChosen(Level gl) {
-        Map.Entry<Boolean, Player> rs1 = getInput(1);
-        Map.Entry<Boolean, Player> rs2 = getInput(2);
+    /**
+     * Start the game if everything is OK
+     * @param lv game level
+     */
+    private void handleLvChosen(Level lv) {
+        Entry<Boolean, Player> rs1 = getInput(1);
+        Entry<Boolean, Player> rs2 = getInput(2);
 
         if (!rs1.getKey() || !rs2.getKey()) return;
 
@@ -108,42 +138,25 @@ public class Menu extends BaseWindow {
         Player p2 = rs2.getValue();
 
         if (!validate(p1, p2)) return;
-        start(p1, p2, gl);
-    }
-    
-    private void start(Player p1, Player p2, Level gl) {
-        Database.registerPlayers(p1.name, p2.name);
-        
-        // Start the game
-        State game = new State(p1, p2, gl);
-        Board board = new Board(game);
-        Game gameWindow = new Game(board, this);
-        gameWindow.run();
-    }
-    
-    private JButton createLevelButton(Level gl) {
-        JButton button = new JButton();
-        button.setText(gl.name());
-        button.setPreferredSize(new Dimension(150, 50));
-        
-        button.addActionListener(e -> handleLevelChosen(gl));
-        return button;
+        start(p1, p2, lv);
     }
     
     /**
-     * Create the panel contains level buttons
-     * @return JPanel
+     * Start the game with players and level
+     * @param p1 player 1
+     * @param p2 player 2
+     * @param lv level
      */
-    private JPanel createLevelPanel() {
-        JPanel gameLevelPanel = new JPanel(new FlowLayout());
+    private void start(Player p1, Player p2, Level lv) {
+        db.registerPlayers(p1.name, p2.name);
         
-        for (Level gl: Level.values()) {
-            gameLevelPanel.add(createLevelButton(gl));
-        }
-        
-        return gameLevelPanel;
+        // Start the game
+        State state = new State(p1, p2, lv);
+        Board board = new Board(state);
+        Game game = new Game(board, this);
+        state.run();
     }
-    
+   
     /**
      * Terminate the program
      */
