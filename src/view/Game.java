@@ -4,13 +4,12 @@
  */
 package view;
 
-import controller.Database;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import model.State;
 
 /**
- *
+ * The Game Window
  * @author Nguyen Kim Hai, Bui
  */
 public class Game extends BaseWindow {
@@ -32,15 +31,17 @@ public class Game extends BaseWindow {
         
         timeLabel.setVisible(true);
         
-        state.tc.setTarget(timeLabel);
-        
         menu.getGames().add(this);
         
         add(board);
         setVisible(true);
     }
     
-    private void endWith(String name) {
+    /**
+     * Show the end of game message to user
+     * @param name winner's name / nobody
+     */
+    private void notify(String name) {
         int choice = JOptionPane.showConfirmDialog(
             this, 
             "Game is over. %s won! \nDo you want to restart?".formatted(name),
@@ -54,16 +55,18 @@ public class Game extends BaseWindow {
         }
     }
     
-    public void run() { state.run(); }
-    
-    public void end(String playerName) {
-        if (playerName.equals("Nobody")) {
-            endWith("Nobody");
+    /**
+     * end the game
+     * @param name winner's name / nobody
+     */
+    public void end(String name) {
+        if (name.equals("Nobody")) {
+            notify("Nobody");
             return;
         }
 
-        Database.updateScore(playerName);
-        endWith(playerName);
+        db.updateScore(name);
+        notify(name);
     }
     
     @Override
