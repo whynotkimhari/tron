@@ -5,7 +5,7 @@
 package model;
 
 /**
- *
+ * The Position
  * @author Nguyen Kim Hai, Bui
  */
 public class Position {
@@ -21,6 +21,11 @@ public class Position {
         this.y = y;
     }
     
+    /**
+     * Move position to new position
+     * @param d direction
+     * @param speed move speed 
+     */
     public void translate(Direction d, int speed) {
         x += d.x * speed;
         y += d.y * speed;
