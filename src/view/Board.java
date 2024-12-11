@@ -18,10 +18,13 @@ import model.Player;
 import model.Vehicle;
 
 /**
- *
+ * The Board
  * @author Nguyen Kim Hai, Bui
  */
 public class Board extends JPanel {
+    /**
+     * Game state
+     */
     public final State state;
     private final BufferedImage canvas = new BufferedImage(
         BaseWindow.W, 
@@ -59,19 +62,28 @@ public class Board extends JPanel {
         });
     }
     
+    /**
+     * Draw the player's trace
+     * @param g2d canvas
+     * @param p player
+     */
     public void paintTrace(Graphics2D g2d, Player p) {
         g2d.setColor(p.color);
-        g2d.fillRect(
-            p.getX() - Vehicle.W / 2,
+        g2d.fillRect(p.getX() - Vehicle.W / 2,
             p.getY() - Vehicle.H / 2,
             Vehicle.W, 
             Vehicle.H
         );
     }
     
-    public void paintHead(Graphics2D g2d, Player p, int scaleFactor) {
-        g2d.drawImage(
-            p.veh.getImage(), 
+    /**
+     * Draw the player's vehicle
+     * @param g2d canvas
+     * @param p player
+     */
+    public void paintHead(Graphics2D g2d, Player p) {
+        int scaleFactor = 6;
+        g2d.drawImage(p.veh.getImg(), 
             p.getX() - Vehicle.W * scaleFactor / 2,
             p.getY() - Vehicle.H * scaleFactor / 2,
             Vehicle.W * scaleFactor, 
@@ -80,6 +92,9 @@ public class Board extends JPanel {
         );
     }
     
+    /**
+     * Clear everything on the board
+     */
     public void clear() {
         // Clear the canvas by filling it with a transparent background
         Graphics2D canvasGraphics = canvas.createGraphics();
@@ -107,9 +122,8 @@ public class Board extends JPanel {
         paintTrace(canvasGraphics, state.p2);
 
         // Draw the motorcycle image at the current position (without leaving a color)
-        int scaleFactor = 6;
-        paintHead(g2d, state.p1, scaleFactor);
-        paintHead(g2d, state.p2, scaleFactor);
+        paintHead(g2d, state.p1);
+        paintHead(g2d, state.p2);
 
         // Clean up graphics object after all drawing
         g.dispose();
