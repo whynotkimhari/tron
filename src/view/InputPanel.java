@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 /**
- *
+ * The Input Panel
  * @author Nguyen Kim Hai, Bui
  */
 public class InputPanel extends JPanel {
@@ -27,9 +27,9 @@ public class InputPanel extends JPanel {
         new String[] {"cycle", "skate", "horse", "motor"}
     );
     
-    private final Border redBorder = BorderFactory.createLineBorder(Color.RED, 2);
-    private final Border defaultBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
-    
+    /**
+     * Error label below the input panel
+     */
     public final JLabel errorLabel = new JLabel("");
     
     public InputPanel(String name, JFrame owner) {
@@ -70,7 +70,15 @@ public class InputPanel extends JPanel {
         add(vehicleNames, gbc);
     }
     
+    /**
+     * Get the player name
+     * @return string
+     * @throws IllegalArgumentException if name is empty
+     */
     public String getPlayerName() throws IllegalArgumentException {
+        Border redBorder = BorderFactory.createLineBorder(Color.RED, 2);
+        Border defaultBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+    
         String name = textField.getText().strip();
         
         if (name.equals("")) {
@@ -86,9 +94,15 @@ public class InputPanel extends JPanel {
         return textField.getText().strip();
     }
     
+    /**
+     * Get chosen color
+     * @return color
+     */
     public Color getColor() { return cp.getColor(); }
     
-    public String getVehicleName() {
-        return (String) vehicleNames.getSelectedItem();
-    }
+    /**
+     * Get chosen vehicle name
+     * @return string
+     */
+    public String getVehicleName() { return (String) vehicleNames.getSelectedItem(); }
 }
