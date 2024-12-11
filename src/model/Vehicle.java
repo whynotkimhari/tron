@@ -4,25 +4,55 @@
  */
 package model;
 
+import java.awt.Image;
 import javax.swing.ImageIcon;
 
 /**
- *
+ * The Vehicle
  * @author Nguyen Kim Hai, Bui
  */
-public class Vehicle extends ImageIcon {
+public class Vehicle {
+    /**
+     * Vehicle image width
+     */
     public static final int W = 10;
+    
+    /**
+     * Vehicle image height
+     */
     public static final int H = 10;
     
-    public Vehicle(String vehicleName, String dirText) {
-        
-        super(
-            Vehicle.class
-                   .getClassLoader()
-                   .getResource("assets/%s-%s.png".formatted(
-                       vehicleName,
-                       dirText
-                   ))
-        );
+    private String name;
+    private Image img;
+    
+    public Vehicle() { }
+    
+    public Vehicle(String name, Direction d) {
+        this.name = name;
+        this.img = new ImageIcon(
+            getClass().getClassLoader().getResource(
+                "assets/%s-%s.png".formatted(
+                    name, 
+                    d.name().toLowerCase()
+                )
+            )
+        ).getImage();
     }
+    
+    /**
+     * Rotate the image to a given direction
+     * @param d direction
+     */
+    public void rotate(Direction d) {
+        this.img = new ImageIcon(
+            getClass().getClassLoader().getResource(
+                "assets/%s-%s.png".formatted(
+                    name, 
+                    d.name().toLowerCase()
+                )
+            )
+        ).getImage();
+    }
+
+    public Image getImg() { return img; }
 }
