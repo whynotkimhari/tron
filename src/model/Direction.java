@@ -5,7 +5,7 @@
 package model;
 
 /**
- *
+ * The Direction
  * @author Nguyen Kim Hai, Bui
  */
 public enum Direction {
@@ -19,5 +19,8 @@ public enum Direction {
         this.y = y;
     }
     
+    /**
+     * coordinates
+     */
     public final int x, y;
 }
