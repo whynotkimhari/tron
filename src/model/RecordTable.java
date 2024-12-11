@@ -7,9 +7,13 @@ package model;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
+/**
+ * The Record Table
+ * @author Nguyen Kim Hai, Bui
+ */
 public class RecordTable extends AbstractTableModel {
     private final ArrayList<Record> records;
-    private final String[] colName = new String[] { "Name", "Score" };
+    private final String[] colNames = new String[] { "Name", "Score" };
     
     public RecordTable(ArrayList<Record> records) {
         this.records = records;
@@ -29,6 +33,6 @@ public class RecordTable extends AbstractTableModel {
     public int getColumnCount() { return 2; }
 
     @Override
-    public String getColumnName(int i) { return colName[i]; }    
+    public String getColumnName(int i) { return colNames[i]; }    
     
 }
